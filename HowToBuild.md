@@ -3,7 +3,7 @@
 
 How to build and run this geant4 sample code.
 
-1. Change the current directory to “compton_gagg"  
+1. Change the current directory to “geant4-example\_compton"  
 **\$ cd geant4-example\_compton**
 
 2. Make a directory of "build", and change the current directory to "build"  
