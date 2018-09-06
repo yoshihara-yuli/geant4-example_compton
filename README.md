@@ -6,7 +6,7 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  - 2018.9.6. revised  
  
 ## 1) Build & Run 
- See **2_HowToBuild.pdf**.
+ See **HowToBuild.pdf**.
 
 ## 2) Geometry
 
