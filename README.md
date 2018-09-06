@@ -10,6 +10,7 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  See **2_HowToBuild.pdf**.
 
 ## 2) Geometry
+
  A Compton ring consists of two modules with inner diameter 20 cm and outer diameter 39 cm in atrmospheric air.
  Each module has a scatter box (**Scabox**) and an absorber box (**Absbox**).
 
@@ -20,6 +21,8 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  (See source files for more information about GAGG properties and detail geometry.)
 
  Both scavoxel and absvoxel are assign as “sensitive detector”. (See Geant4 guidance documents)
+
+![compton_geometry](geometry.png)
 
 ## 3) Source
 
