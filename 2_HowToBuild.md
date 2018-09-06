@@ -21,7 +21,7 @@ How to build and run this geant4 sample code.
 
 4. Check geometry and beam condition with Qt.  
 **\$ ./exampleB3**   
-<font color="Blue">(In Qt window, you can check beam condition by running the macro file like **execute/run run1.mac**.) </font>
+<font color="Blue">(In Qt window, you can check beam condition by running the macro file by put **/control/execute run1.mac** in Session.) </font>
 
 5. Obtain data with macro file **run1.mac**  
 **$ ./exampleB3 run1.mac** 

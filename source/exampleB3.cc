@@ -25,20 +25,20 @@
 //
 // $Id$
 //
-/// \file exampleB3.cc
-/// \brief Main program of the B3 example
+/// \file example_compton.cc
+/// \brief Main program of the compton example
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 
 #include "Randomize.hh"
 
-#include "B3DetectorConstruction.hh"
-#include "B3PhysicsList.hh"
-#include "B3PrimaryGeneratorAction.hh"
-#include "B3RunAction.hh"
-#include "B3EventAction.hh"
-#include "B3StackingAction.hh"
+#include "UserDetectorConstruction.hh"
+#include "UserPhysicsList.hh"
+#include "UserPrimaryGeneratorAction.hh"
+#include "UserRunAction.hh"
+#include "UserEventAction.hh"
+#include "UserStackingAction.hh"
 #include "G4Timer.hh" //yy
 #include <time.h> //yy
 
@@ -88,20 +88,20 @@ int main(int argc,char** argv)
 
   // Set mandatory initialization classes
   //
-  runManager->SetUserInitialization(new B3DetectorConstruction);
+  runManager->SetUserInitialization(new UserDetectorConstruction);
   //
-  runManager->SetUserInitialization(new B3PhysicsList);
+  runManager->SetUserInitialization(new UserPhysicsList);
     
   // Set user action classes
   //
-  runManager->SetUserAction(new B3PrimaryGeneratorAction);
+  runManager->SetUserAction(new UserPrimaryGeneratorAction);
   //
-  B3RunAction* runAction = new B3RunAction();
+  UserRunAction* runAction = new UserRunAction();
   runManager->SetUserAction(runAction);
   //
-  runManager->SetUserAction(new B3EventAction(runAction));
+  runManager->SetUserAction(new UserEventAction(runAction));
   //
-  runManager->SetUserAction(new B3StackingAction);  
+  runManager->SetUserAction(new UserStackingAction);  
   
   // Initialize G4 kernel
   //
