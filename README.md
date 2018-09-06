@@ -28,6 +28,6 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  Point source: uniform irradiation of Cs-137 at the origin (0,0,0)
 
 ## 4) Output Data
- Use **result.txt**, which is raw data of geant4 Simulation.
- (See 3_AboutCode and the corresponding source files for more information about data properties.)
+ The simulation results are output in **result.txt**.  
+ (See **AboutCode.pdf** and the corresponding source files for more information.)
 
