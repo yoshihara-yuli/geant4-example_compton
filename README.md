@@ -1,11 +1,10 @@
-# README (2016.11.11)
+# README
 Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
-- - - - - - - - - - - - - - - - - - - - - - 
+
 ## History
  - 2016.11.11 created  
  - 2018.9.6. revised  
  
-- - - - - - - - - - - - - - - - - - - - - - 
 ## 1) Build & Run 
  See **2_HowToBuild.pdf**.
 
@@ -31,4 +30,4 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
 ## 4) Output Data
  Use **result.txt**, which is raw data of geant4 Simulation.
  (See 3_AboutCode and the corresponding source files for more information about data properties.)
-- - - - - - - - - - - - - - - - - - - - - - 
+
