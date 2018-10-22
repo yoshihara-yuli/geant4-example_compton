@@ -281,7 +281,7 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
                       "Absbox",               // its name
                       logicModule,             // its mother  volume
                       false,                  // no boolean operation
-                      0,                      // copy number
+                      1,                      // copy number
                       fCheckOverlaps);        // checking overlaps 
   
 

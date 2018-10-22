@@ -35,13 +35,18 @@
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
 #include "G4ios.hh"
-#include "G4UnitsTable.hh" 
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+
+//#include "G4UnitsTable.hh"
 #include "G4VProcess.hh" 
 #include "G4EventManager.hh" 
-#include "G4Event.hh" 
-extern std::ofstream ofs;
-extern std::ofstream ofs2;
+#include "G4Event.hh"
 
+#include <iostream>
+#include <vector>
+
+extern std::ofstream ofs;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -67,11 +72,7 @@ void ExN02TrackerSD::Initialize(G4HCofThisEvent* HCE)
   static G4int HCID = -1;
   if(HCID<0)
   { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
-  HCE->AddHitsCollection( HCID, trackerCollection ); 
-
-  // initialization
-  total_edep = 0.0;
-  cnt = 0;
+  HCE->AddHitsCollection( HCID, trackerCollection );
 
 }
 
@@ -80,75 +81,93 @@ void ExN02TrackerSD::Initialize(G4HCofThisEvent* HCE)
 G4bool ExN02TrackerSD::ProcessHits(G4Step* aStep,G4TouchableHistory*)
 {
 
-  G4double edep = aStep->GetTotalEnergyDeposit();
-  G4int depth;
+    const G4Track * aTrack =  aStep->GetTrack();
+    
+    //Check Energy deposit
+    G4double eDep = aStep->GetTotalEnergyDeposit();
+    if (eDep <= 0.0 ) return false;
+    G4double time = aTrack->GetGlobalTime();
+    
+    G4int copyNO = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(0);
+    G4int granma_copyNO = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(2); //[yy]
+    G4int mum_copyNO = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1); //[yy]
+    
+    G4int NbHits = trackerCollection->entries();
+    G4int eventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
+    G4bool found = false;
+    for (G4int iHit=0; (iHit<NbHits) && (!found) ;iHit++) {
+        found = (   (copyNO == (*trackerCollection)[iHit]->GetCopyNO0()) //);
+                 && (mum_copyNO == (*trackerCollection)[iHit]->GetCopyNO1()) // [yy]
+                 && (granma_copyNO == (*trackerCollection)[iHit]->GetCopyNO2()) ); // [yy]
+        if (found) {
+            (*trackerCollection)[iHit]->AddEdep(eDep);
+            return true;
+        }
+    }
+    
+    /*
+     G4cout << "[debug] : \t"
+     << "Person: "  << copyNO << ",\t"
+     << "Mother: "  << mum_copyNO    << ",\t"
+     << "Granma: "  << granma_copyNO << "\t" << G4endl;
+     */
+    
+    ExN02TrackerHit* newHit = new ExN02TrackerHit();
+    newHit->Set(eventID, granma_copyNO,mum_copyNO,copyNO, aTrack, eDep);
+    trackerCollection->insert( newHit );
 
-  if(edep==0.) return false; //yy if
-
-  //newHit is the object of ExN02TrackerHit class which is defined as in ExN02TrackerHit.cc
-  ExN02TrackerHit* newHit = new ExN02TrackerHit();
-  newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  newHit->SetLayerNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(depth=1)); //depth=1: Mother 
-  newHit->SetStripNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(depth=0)); //depth=0: Itself
-
-  newHit->SetEdep     (edep);
-  newHit->SetPos      (aStep->GetPostStepPoint()->GetPosition());
-
-  trackerCollection->insert( newHit );
-  
-  newHit->Print();
-
-  event = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
-  track = newHit->GetTrackID();
-  parent = aStep->GetTrack()->GetParentID();
-
-  point = aStep->GetPostStepPoint();
-  pos   = point->GetPosition();
-  process  =  aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-
-  //G4StepPoint* prePoint       = aStep->GetPreStepPoint(); 
-  G4StepPoint* postPoint      = aStep->GetPostStepPoint(); 
-  G4TouchableHandle touch     = postPoint->GetTouchableHandle(); // choose Pre/Post Step 
-
-  // person (main) -> sca/abs
-  person             = touch    -> GetVolume();
-  person_name        = person   -> GetName();
-  person_copyNumber  = touch    -> GetCopyNumber();
-
-  G4cout << "person:"  << "\t" << person_name << "\t" << person_copyNumber << "\t"
-         << track << "\t" << parent << G4endl;
-
-  if(strcmp(person_name,"World")==0) G4cout << "===========================" << G4endl;
-
-  // if gamma is reacted with world air, core dumption occured! -> Select Sca/Abs
-  if(strcmp(person_name,"Scavoxel")==0 || strcmp(person_name,"Absvoxel")==0){
- 
-    // mother -> scabox or absbox
-    mother            = touch     -> GetVolume(depth=1);
-    mother_name       = mother    -> GetName();
-    mother_copyNumber = touch     -> GetCopyNumber(depth=1); 
-
-    // grand mother (grandma) -> module 
-    grandma            = touch    -> GetVolume(depth=2);
-    grandma_name       = grandma  -> GetName();
-    grandma_copyNumber = touch    -> GetCopyNumber(depth=2);  
-
-    ofs << "event:" << "\t" << event << "\t" << particle << "\t" << process << "\t" 
-        << pos << "\t" << track << "\t" << parent << "\t" << edep << "\t"
-        << "person:"  << "\t" << person_name << "\t" << person_copyNumber << "\t"
-        << "mother:"  << "\t" << mother_name << "\t" << mother_copyNumber << "\t" 
-        << "grandma:" << "\t" << grandma_name << "\t" << grandma_copyNumber << "\t"
-        << std::endl;
-  }
   return true;
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent*)
+void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent* HCE)
 {
-
+    G4int NbHits = trackerCollection->entries();
+    if (verboseLevel>0) {
+        G4cout << "\n-------->Hits Collection: in this event they are "
+        << NbHits
+        << " hits in the tracker chambers: " << G4endl;
+    }
+    
+    G4bool isFirstHit = true;
+    G4bool hasHit=false;
+    
+    for (G4int i=0;i<NbHits;i++){
+        ExN02TrackerHit* hit = (*trackerCollection)[i];
+        if (verboseLevel>1) hit->Print();
+        
+        // output hits other than trigger counters
+        //if (hit->GetEdep() < eThreshold ) continue;
+        if (isFirstHit) {
+            isFirstHit = false;
+            hasHit = true;
+        }
+        
+        /*
+        // for Debug
+         G4cout << "[debug] : \t"
+         << "Person: "  << hit->GetCopyNO0() << ",\t"
+         << "Mother: "  << hit->GetCopyNO1()    << ",\t"
+         << "Granma: "  << hit->GetCopyNO2() << "\t" << G4endl;
+         */
+        
+        ofs  << hit->GetEventID()  // [yy]
+        << "\t"  << hit->GetCopyNO2() // [yy] granma
+        << "\t"  << hit->GetCopyNO1() // [yy] mother
+        << "\t"  << hit->GetCopyNO0() // [yy] person
+        << "\t"  << hit->GetEdep()/MeV
+        << "\t"  << hit->GetPos().x()/mm
+        << "\t"  << hit->GetPos().y()/mm
+        << "\t"  << hit->GetPos().z()/mm
+        << "\t"  << hit->GetTime()/ns
+        << "\t"  << hit->GetTrackID()
+        << "\t"  << hit->GetPDGcode()
+        << std::endl;
+    
+    }
+    /*
   if (verboseLevel>0) { 
      G4int NbHits = trackerCollection->entries();
      G4cout << "\n-------->Hits Collection: in this event they are " << NbHits 
@@ -164,6 +183,7 @@ void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent*)
         << "grandma:" << "\t" << grandma_name << "\t" << grandma_copyNumber << "\t"
         << std::endl;
   }
+     */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

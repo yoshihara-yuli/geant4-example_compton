@@ -38,9 +38,18 @@
 
 G4Allocator<ExN02TrackerHit> ExN02TrackerHitAllocator;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-ExN02TrackerHit::ExN02TrackerHit() {}
+ExN02TrackerHit::ExN02TrackerHit():
+eventID(-1),         //[yy]
+granma_copyNO(-1), //[yy]
+mum_copyNO(-1),    //[yy]
+copyNO(-1),
+trackID(0),
+codePDG(0),
+charge(0.0),
+energy(0.0),
+time(0.0),
+eDep(0.0)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -48,38 +57,68 @@ ExN02TrackerHit::~ExN02TrackerHit() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ExN02TrackerHit::ExN02TrackerHit(const ExN02TrackerHit& right)
-  : G4VHit()
+ExN02TrackerHit::ExN02TrackerHit(const ExN02TrackerHit& right):
+G4VHit()
 {
-  trackID   = right.trackID;
-  //chamberNb = right.chamberNb;
-  layerNb = right.layerNb;
-  stripNb = right.stripNb;
-  edep      = right.edep;
-  pos       = right.pos;
+    eventID = right.eventID;
+    granma_copyNO   = right.granma_copyNO; // [yy]
+    mum_copyNO      = right.mum_copyNO; // [yy]
+    copyNO      = right.copyNO;
+    trackID     = right.trackID;
+    codePDG     = right.codePDG;
+    charge      = right.charge;
+    energy      = right.energy;
+    momentum    = right.momentum;
+    pos         = right.pos;
+    eDep         = right.eDep;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 const ExN02TrackerHit& ExN02TrackerHit::operator=(const ExN02TrackerHit& right)
 {
-  trackID   = right.trackID;
-  //chamberNb = right.chamberNb;
-  layerNb = right.layerNb;
-  stripNb = right.stripNb;
-  edep      = right.edep;
-  pos       = right.pos;
-  return *this;
+    if (this != &right) {
+        eventID = right.eventID;
+        granma_copyNO   = right.granma_copyNO; // [yy]
+        mum_copyNO      = right.mum_copyNO; // [yy]
+        copyNO      = right.copyNO;
+        trackID     = right.trackID;
+        codePDG     = right.codePDG;
+        charge      = right.charge;
+        energy      = right.energy;
+        momentum    = right.momentum;
+        pos         = right.pos;
+        eDep         = right.eDep;
+    }
+    return *this;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4int ExN02TrackerHit::operator==(const ExN02TrackerHit& right) const
 {
-  return (this==&right) ? 1 : 0;
+    return (this==&right) ? 1 : 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void ExN02TrackerHit::Set(int event, int granma_copy, int mum_copy, int copy, const G4Track* track,G4double eLoss)
+{
+    eventID  = event;
+    granma_copyNO   =  granma_copy; // [yy]
+    mum_copyNO   =  mum_copy;   // [yy]
+    copyNO   =  copy;
+    eDep     =  eLoss;
+    trackID  =  track->GetTrackID();
+    codePDG  =  track->GetDefinition()->GetPDGEncoding();
+    charge   =  track->GetDefinition()->GetPDGCharge();
+    energy   =  track->GetKineticEnergy();
+    momentum =  track->GetMomentum();
+    pos      =  track->GetPosition();
+    if(time > track->GetGlobalTime()){
+        time     =  track->GetGlobalTime();
+    }
+}
 
 void ExN02TrackerHit::Draw()
 {
@@ -100,9 +139,22 @@ void ExN02TrackerHit::Draw()
 
 void ExN02TrackerHit::Print()
 {
-  G4cout << "  trackID: " << trackID << "  layerNb: " << layerNb << "  stripNb: " << stripNb
-         << "  energy deposit: " << G4BestUnit(edep,"Energy")
-         << "  position: " << G4BestUnit(pos,"Length") << G4endl;
+    G4cout << "Event ID : " << eventID << G4endl; // [yy]
+    G4cout << "Copy Number (Grand Mother) : " << granma_copyNO << G4endl; // [yy]
+    G4cout << "Copy Number (Mother) : " << mum_copyNO << G4endl; // [yy]
+    G4cout << "Copy Number (Person): " << copyNO << G4endl;
+    G4cout << "TrackID: " << trackID << G4endl;
+    G4cout << "PDG code: "<< codePDG << "  "
+    << "charge: " << charge/eplus << G4endl;
+    G4cout << "enregy: " << energy /MeV  << G4endl;
+    G4cout << "momentum: "<< momentum.x()/MeV << " "
+    << momentum.y()/MeV << " "
+    << momentum.z()/MeV << G4endl;
+    G4cout << "position: "<< pos.x()/mm << " "
+    << pos.y()/mm << " "
+    << pos.z()/mm << G4endl;
+    G4cout << "time: "<< time/ns << G4endl;
+    G4cout << "Energy deposit" << eDep/MeV << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

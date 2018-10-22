@@ -50,59 +50,12 @@ class ExN02TrackerSD : public G4VSensitiveDetector
       void Initialize(G4HCofThisEvent*);
       G4bool ProcessHits(G4Step*, G4TouchableHistory*);
       void EndOfEvent(G4HCofThisEvent*);
+    
+      static const G4String& GetCollectionName() {return HCname;}
 
   private:
       ExN02TrackerHitsCollection* trackerCollection;
-
-  private:
-      
-      G4double edep;
-      G4double total_edep;
-
-      G4double total_edep_singlestrip;
-      G4int event;
-      G4int track;
-      G4int track_orig;
-      G4int parent;
-      G4int parent_orig;
-      G4int layer;
-      G4int strip;
-      ExN02TrackerHit* newHit;
-      G4String process;
-      G4String process_orig;
-      G4String particle;
-      G4String particle_orig;
-
-      G4StepPoint* point; 
-      G4ThreeVector pos;
-      //G4double global_time; //yy
-      //G4String  particle; //yy
-
-
-      // person : scapoxel or abxvoxel
-      G4VPhysicalVolume* person;
-      G4String person_name;
-      G4String person_name2;
-      G4int person_copyNumber;
-      G4int person_copyNumber2;
-
-      // mother : scabox or absbox 
-      G4VPhysicalVolume* mother;
-      G4String mother_name;
-      G4String mother_name2;
-      G4int mother_copyNumber; 
-      G4int mother_copyNumber2; 
-
-      // grand mother (grandma) : module 
-      G4VPhysicalVolume* grandma;
-      G4String grandma_name;
-      G4String grandma_name2;
-      G4int grandma_copyNumber;  
-      G4int grandma_copyNumber2; 
-
-      G4int cnt; // [yy]
-      G4ThreeVector pos2; // [yy]
-      G4ThreeVector pos_orig; // [yy]
+      static const G4String HCname;
 
 };
 

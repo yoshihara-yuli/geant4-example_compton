@@ -36,6 +36,9 @@
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4Track.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -56,31 +59,39 @@ class ExN02TrackerHit : public G4VHit
       void Print();
 
   public:
-  
-      //[mtsuk] No need to define further about these functions in .cc??
-      //[mtsuk] Added layer and strip, commented chamber
-      void SetTrackID  (G4int track)      { trackID = track; };
-      //void SetChamberNb(G4int chamb)      { chamberNb = chamb; };
-      void SetLayerNb  (G4int layer)      { layerNb = layer; };
-      void SetStripNb  (G4int strip)      { stripNb = strip; };
-      void SetEdep     (G4double de)      { edep = de; };
-      void SetPos      (G4ThreeVector xyz){ pos = xyz; };
-      
-      G4int GetTrackID()    { return trackID; };
-      //G4int GetChamberNb()  { return chamberNb; };
-      G4int GetLayerNb()  { return layerNb; };
-      G4int GetStripNb()  { return stripNb; };
-      G4double GetEdep()    { return edep; };      
-      G4ThreeVector GetPos(){ return pos; };
+    
+    void Set(int event, int granma_copy,int mum_copy,int copy, const G4Track* track ,G4double eDep); // [yy] add granma_copy and mum_copy
+    
+    G4int GetEventID()    const  { return eventID; };    // [yy]
+    G4int GetCopyNO0()    const  { return copyNO; }; // [yy]
+    G4int GetCopyNO1()    const  { return mum_copyNO; }; // [yy]
+    G4int GetCopyNO2()    const  { return granma_copyNO; }; // [yy]
+    
+    G4int GetTrackID()            const  { return trackID; };
+    G4int GetPDGcode()            const  { return codePDG; };
+    G4double GetCharge()          const  { return charge; };
+    G4double GetEnergy()          const  { return energy; };
+    const G4ThreeVector& GetMomentum() const  { return momentum; };
+    const G4ThreeVector& GetPos()      const  { return pos; };
+    G4double GetTime()                 const  { return time; };
+    G4double GetEdep() const { return eDep;};
+    void AddEdep(G4double val){ eDep += val;};
       
   private:
   
-      G4int         trackID;
-      //G4int         chamberNb;
-      G4int         layerNb;
-      G4int         stripNb;
-      G4double      edep;
-      G4ThreeVector pos;
+    G4int         eventID;    // [yy]
+    G4int         granma_copyNO; // [yy]
+    G4int         mum_copyNO; // [yy]
+    G4int         copyNO;
+    G4int         trackID;
+    G4int         codePDG;
+    G4double      charge;
+    G4double      energy;
+    G4ThreeVector momentum;
+    G4ThreeVector pos;
+    G4double      time;
+    G4double         eDep;
+    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

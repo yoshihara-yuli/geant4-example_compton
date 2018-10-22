@@ -37,7 +37,6 @@
 #include "G4SystemOfUnits.hh"
 
 extern std::ofstream ofs;
-extern std::ofstream ofs2;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -80,7 +79,18 @@ void UserRunAction::BeginOfRunAction(const G4Run* run)
   // ofs is defined in the main program file.
   // open the output file
   ofs.open("result.txt", std::ios::out);
-  ofs2.open("result2.txt", std::ios::out);
+  ofs  << "eventID"  // [yy]
+    << "\t"  << "moduleNo" // [yy] granma
+    << "\t"  << "boxNo"    // [yy] mother
+    << "\t"  << "voxelNo"  // [yy] person
+    << "\t"  << "edep_MeV"
+    << "\t"  << "posx_mm"
+    << "\t"  << "posy_mm"
+    << "\t"  << "posz_mm"
+    << "\t"  << "time_ns"
+    << "\t"  << "trackID"
+    << "\t"  << "particle"
+    << std::endl;
 
 }
 
@@ -108,9 +118,24 @@ void UserRunAction::EndOfRunAction(const G4Run* run)
      << "\n------------------------------------------------------------\n"
      << G4endl;
 
+    G4cout << "\n--------------------About Data------------------------------\n"
+    << "Dataformat is given as below (tab split)\n"
+    << "   eventID"  // [yy]
+    << ", "  << "moduleNo" // [yy] granma
+    << ", "  << "boxNo"    // [yy] mother
+    << ", "  << "voxelNo"  // [yy] person
+    << ", "  << "edep_MeV"
+    << "\n"  << "   posx_mm"
+    << ", "  << "posy_mm"
+    << ", "  << "posz_mm"
+    << ", "  << "time_ns"
+    << "\n"  << "   trackID"
+    << ", "  << "particle"
+    << "\n--------------------About Data------------------------------\n"
+    << std::endl;
+
   // close the output file.
   ofs.close();
-  ofs2.close();
   
 
 }
