@@ -6,7 +6,7 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  - 2018.9.6. revised  
  
 ## 1) Build & Run 
- See **HowToBuild.pdf**.
+ See [**HowToBuild**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/HowToBuild.md) about how to build and run.
 
 ## 2) Geometry
 
@@ -17,22 +17,29 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
  Absbox consists of 8x8 scatter voxels (**absvoxel**), which is 10x10x10mm.
  The distance between Scabox and the origin is 10 cm.
  The distance between Scabox and Absbox is 8 cm.
- (See source files for more information about GAGG properties and detail geometry.)
 
- Both scavoxel and absvoxel are assign as “sensitive detector”. (See Geant4 guidance documents)
+ Both scavoxel and absvoxel are assign as “Sensitive Detector (SD)”. 
+ 
+These characteriscis of geometry are defined in [**UserDetectorConstruction.cc**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/source/src/UserDetectorConstruction.cc) in source/src/. Please modify it if you want to change geometry.
 
 ![compton_geometry](geometry.png)
 
 ## 3) Source
 
- Point source: uniform irradiation of Cs-137 at the origin (0,0,0)
+ Point source: uniform irradiation of Cs-137 at the origin (0,0,0). 
+ 
+ These characteriscis of raidaoctive source are defined in [**UserPrimaryGeneratorAction.cc**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/source/src/UserPrimaryGeneratorAction.cc) in source/src/. 
+ Please modify it if you want to change raidaoctive source.
 
 ## 4) Data Output
  The simulation results are output in **result.txt**.  
- (See **AboutCode.pdf** and the corresponding source files for more information.)
+ (See [**AboutCode**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/AboutCode.md) and the corresponding source files for more information.)
  
- Besides, [**analysis.py**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/analysis/analysis.py) is uploaded for basic analysis of the simulation data. 
- You can start to check and analize data with this code.
+ [**analysis.py**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/analysis/analysis.py) is uploaded for basic analysis of the simulation data. 
+ You can start to check and analize data by using this code.
+ 
+ Geant4 output data format is defined in [**ExN02TrackerSD.cc**]() in source/src/. 
+ Please modify it if you want to change data format.
 
 # Geant4 output data format 
 
@@ -57,12 +64,6 @@ Especially in the eight information, these four information should be in your co
  - **voxel's id** : 0-63 corresponding to each GAGG crystal.
  - **edep** : the summed energy deposition at a specific GAGG crystal.
 
-Generally, you don't have to analize **posx**, **posy**, **posz**, **time**, **track**, **particle**, which are information obtained only through simulation (not experiment). There can be used for simulation check, sometimes.  
-**Caution!** These six information (posx, poy, posz, time, track, particle) are only for the interaction at the end step in the GAGG crystal**
+Generally, you don't have to analize **posx**, **posy**, **posz**, **time**, **track**, **particle**, which are information obtained only through simulation (not experiment). There might be sometimes useful for simulation check.  
 
-## The change of data format
-Geant4 output data format is defined in **ExN02TrackerSD.cc**. 
-(Please modify ExN02TrackerSD.cc if you want to change data format.)
-
-
-
+**Caution!** These six information (posx, poy, posz, time, track, particle) are only for the interaction at the end step in the GAGG crystal. (Please see definition of 'steps' or 'cuts', [This doumentation](https://agenda.infn.it/getFile.py/access?sessionId=2&resId=0&materialId=0&confId=10937) might be helpful.)
