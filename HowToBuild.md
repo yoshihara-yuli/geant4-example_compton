@@ -20,7 +20,7 @@ $ cd build
 #### 3. Cmake  
 
 ```
-$	cmake -DGeant4_DIR= /Home/Geant4/einstall/lib64/Geant4-9.6.4 ../source   
+$ cmake -DGeant4_DIR= /Home/Geant4/einstall/lib64/Geant4-9.6.4 ../source   
 ```
 
  - The path of **-DGeant4_DIR (/Home/Geant4/...) should be changed according to your geant4 installation location**.
@@ -54,5 +54,5 @@ $ ./exampleB3 run1.mac > /dev/null 2>&1
 ```
 
 
-#### Caution!
+##### Caution!
 Please **build (make) again** whenever changing source files or header files, otherwise, those changes happened after the last make (build), would not be reflected to the simulation.
