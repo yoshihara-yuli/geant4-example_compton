@@ -12,7 +12,7 @@
 
 <font color="Blue">NOTE: The only **bold** codes should be modified according to your simulation.</font>
 
--
+
 ### 1) UserDetectorConstruction
  See geometry tutorial [here](https://geant4.web.cern.ch/collaboration/working_groups/geometry) for detail.
 
@@ -28,16 +28,16 @@
 
 <font color="Blue">Note: You should identify mulitple SDs from the same logic volume with **copy number of G4PVPlacement**</font>
 
--
+
 ### 2) UserEventAction
 You don't have to change this code.
 
--
+
 ### 3) UserPhysicsList
  - Choose physicslist (standard or penelope) (default: penelope)
  - Choose cut value (dafault: 1 mm)
 
--
+
 ### 4) UserPrimaryGeneratorAction
  - Set particle (**particleTable->FindParticle**)
  - Set particle energy (**SetParticleEnergy**)
@@ -46,15 +46,15 @@ You don't have to change this code.
 
 <font color="Blue">NOTE: **B3PrimaryGeneratorAction** is setting only for the first beam, and **GeneratePrimaries** is setting for the other all beams. If you want to set different particle movement for every beam, you can change the above parameters in **GeneratePrimaries**.</font>
 
--
+
 ### 5) UserRunAction
 You don't have to change this code.
 
--
+
 ### 6) UserStackingAction
 You don't have to change this code.
 
--
+
 ### 7) ExN02TrackerHit
 You don't have to change this code.
 
@@ -68,4 +68,4 @@ If you want to use specific random seeds or fix random seeds for the all simulat
 
 ### 2.2 General Paricle Soure (GPS)
 If you want to change source condition in macro file, you need specific sentences in some files (please contact to Yoshihara, if you want to use)
-- - - - - - - - - - - - - - - - - - - - - - 
+
