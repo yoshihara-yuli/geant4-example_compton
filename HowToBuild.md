@@ -20,7 +20,7 @@ $ cd build
 #### 3. Cmake  
 
 ```
-$ cmake -DGeant4_DIR= /Home/Geant4/einstall/lib64/Geant4-9.6.4 ../source   
+$ cmake -DGeant4_DIR=/Home/Geant4/einstall/lib64/Geant4-9.6.4 ../source   
 ```
 
  - The path of **-DGeant4_DIR (/Home/Geant4/...) should be changed according to your geant4 installation location**.
