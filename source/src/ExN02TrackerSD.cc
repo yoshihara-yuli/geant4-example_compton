@@ -43,6 +43,8 @@
 #include "G4EventManager.hh" 
 #include "G4Event.hh"
 
+#include "CLHEP/Random/Random.h" // [mtsuk]
+
 #include <iostream>
 #include <vector>
 
@@ -153,6 +155,22 @@ void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent* HCE)
          << "Granma: "  << hit->GetCopyNO2() << "\t" << G4endl;
          */
         
+        // ------------------------------
+        // Energy resolution [mtsuk]
+        // ------------------------------
+        
+        G4double edep_keV = 1000.*(hit->GetEdep()/MeV);
+        
+        G4double K = 1.314; // FWHM 12% @ 662keV
+        //G4double K = 1.094; // FWHM 10% @ 662keV
+        //G4double K = 0.657; // FWHM 6% @ 662keV
+        //G4double K = 0.547; // FWHM 5% @ 662keV
+        //G4double K = 0.438; // FWHM 4% @ 662keV
+        
+        G4double sigma = K * sqrt(edep_keV);
+        G4double edep_keV_observed = CLHEP::RandGauss::shoot(edep_keV, sigma);
+        G4double edep_MeV_observed = edep_keV_observed / 1000.;
+        
         ofs  << hit->GetEventID()  // [yy]
         << "\t"  << hit->GetCopyNO2() // [yy] granma
         << "\t"  << hit->GetCopyNO1() // [yy] mother
@@ -167,23 +185,7 @@ void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent* HCE)
         << std::endl;
     
     }
-    /*
-  if (verboseLevel>0) { 
-     G4int NbHits = trackerCollection->entries();
-     G4cout << "\n-------->Hits Collection: in this event they are " << NbHits 
-            << " hits in the tracker chambers: " << G4endl;
-     for (G4int i=0;i<NbHits;i++) (*trackerCollection)[i]->Print();
-    }
 
-  if(total_edep>0.0){
-    ofs << "event:" << "\t" << event << "\t" << particle << "\t" << process << "\t" 
-        << pos << "\t" << track << "\t" << parent << "\t" << edep << "\t"
-        << "person:"  << "\t" << person_name << "\t" << person_copyNumber << "\t"
-        << "mother:"  << "\t" << mother_name << "\t" << mother_copyNumber << "\t" 
-        << "grandma:" << "\t" << grandma_name << "\t" << grandma_copyNumber << "\t"
-        << std::endl;
-  }
-     */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
