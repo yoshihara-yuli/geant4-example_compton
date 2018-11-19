@@ -107,36 +107,41 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
   // --- Parameters for geometry ---
 
   // world
-  G4double world_sizeX = 50*cm; 
-  G4double world_sizeY = 50*cm; 
-  G4double world_sizeZ = 50*cm;
+  G4double world_sizeX = 100*cm; 
+  G4double world_sizeY = 100*cm; 
+  G4double world_sizeZ = 100*cm;
 
   // scabox
   G4double scabox_sizeX =      5.0  *mm;
-  G4double scabox_sizeY =     80.0  *mm; 
-  G4double scabox_sizeZ =     80.0  *mm;
+  G4double scabox_sizeY =     88.0  *mm; 
+  G4double scabox_sizeZ =     88.0  *mm;
 
   // scavoxel
-  G4double scavoxel_sizeX =   5.0  *mm;
-  G4double scavoxel_sizeY =   10.0  *mm;
-  G4double scavoxel_sizeZ =   10.0  *mm;
+  G4double scavoxel_sizeX  =    5.0  *mm;
+  G4double scavoxel_sizeY  =   10.0  *mm;
+  G4double scavoxel_sizeZ  =   10.0  *mm;
+  G4double scavoxel_pitchY =   11.0  *mm;
+  G4double scavoxel_pitchZ =   11.0  *mm;
   G4int number_of_scavoxel_dimY  =   8; 
   G4int number_of_scavoxel_dimZ  =   8; 
 
   // absbox
   G4double absbox_sizeX =   10.0  *mm;
-  G4double absbox_sizeY =   80.0  *mm;
-  G4double absbox_sizeZ =   80.0  *mm;
+  G4double absbox_sizeY =   88.0  *mm;
+  G4double absbox_sizeZ =   88.0  *mm;
+
   // absvoxel
   G4double absvoxel_sizeX =    10.0  *mm;
-  G4double absvoxel_sizeY =     10.0  *mm;
-  G4double absvoxel_sizeZ =     10.0  *mm;
+  G4double absvoxel_sizeY =    10.0  *mm;
+  G4double absvoxel_sizeZ =    10.0  *mm;
+  G4double absvoxel_pitchY =   11.0  *mm;
+  G4double absvoxel_pitchZ =   11.0  *mm;
   G4int number_of_absvoxel_dimY  =  8; 
   G4int number_of_absvoxel_dimZ  =  8;  
 
   // distances
-  G4double distance_source_sca  = 100.0  *mm; // distance between scatter and origin(0,0,0)
-  G4double distance_sca_abs        =  80.0  *mm; // distance between absorber and scatter
+  G4double distance_source_sca  = 300.0  *mm; // distance between scatter and origin(0,0,0)
+  G4double distance_sca_abs     = 110.0  *mm; // distance between absorber and scatter
 
   // module
   G4double module_sizeX = scabox_sizeX+distance_sca_abs+absbox_sizeX; 
@@ -248,7 +253,7 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
   for (G4int i = 0; i < number_of_scavoxel_dimY ; i++) {
     for (G4int j = 0; j < number_of_scavoxel_dimZ ; j++) {
        new G4PVPlacement(0,                     // no rotation
-                      G4ThreeVector(0,(i+0.5)*scavoxel_sizeY-scabox_sizeY*0.5,(j+0.5)*scavoxel_sizeZ-scabox_sizeZ*0.5), //location
+                      G4ThreeVector(0,(i+0.5)*scavoxel_pitchY-scabox_sizeY*0.5,(j+0.5)*scavoxel_pitchZ-scabox_sizeZ*0.5), //location
                       logicScavoxel,            // its logical volume
                       "Scavoxel",               // its name
                       logicScabox,              // its mother  volume
@@ -302,7 +307,7 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
   for (G4int i = 0; i < number_of_absvoxel_dimY ; i++) {
     for (G4int j = 0; j < number_of_absvoxel_dimZ ; j++) {
       new G4PVPlacement(0,                    // no rotation
-                      G4ThreeVector(0,(i+0.5)*absvoxel_sizeY-absbox_sizeY*0.5,(j+0.5)*absvoxel_sizeZ-absbox_sizeZ*0.5), // location
+                      G4ThreeVector(0,(i+0.5)*absvoxel_pitchY-absbox_sizeY*0.5,(j+0.5)*absvoxel_pitchZ-absbox_sizeZ*0.5), // location
                       logicAbsvoxel,          // its logical volume
                       "Absvoxel",             // its name
                       logicAbsbox,            // its mother  volume
