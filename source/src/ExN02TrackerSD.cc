@@ -171,11 +171,16 @@ void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent* HCE)
         G4double edep_keV_observed = CLHEP::RandGauss::shoot(edep_keV, sigma);
         G4double edep_MeV_observed = edep_keV_observed / 1000.;
         
-        ofs  << hit->GetEventID()  // [yy]
-        << "\t"  << hit->GetCopyNO2() // [yy] granma
-        << "\t"  << hit->GetCopyNO1() // [yy] mother
-        << "\t"  << hit->GetCopyNO0() // [yy] person
-        << "\t"  << hit->GetEdep()/MeV
+        // ------------------------------
+        // Data output to text file
+        // ------------------------------
+
+        ofs  << hit->GetEventID()  // event number
+        << "\t"  << hit->GetCopyNO2() // granma(module)
+        << "\t"  << hit->GetCopyNO1() // mother(box)
+        << "\t"  << hit->GetCopyNO0() // person(voxel)
+        //<< "\t"  << hit->GetEdep()/MeV // ideal deposited energy
+	<< "\t"  << edep_MeV_observed    // with energy resolution
         << "\t"  << hit->GetPos().x()/mm
         << "\t"  << hit->GetPos().y()/mm
         << "\t"  << hit->GetPos().z()/mm
