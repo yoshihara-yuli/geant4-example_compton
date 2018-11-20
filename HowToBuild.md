@@ -44,13 +44,13 @@ In Qt window, you can check beam condition by running the macro file by put **/c
 #### 6. Obtain data with macro file **run1.mac**  
 
 ```
-$ ./exampleB3 run1.mac
+$ ./exampleB3 run.mac
 ```
 
 or
 
 ```
-$ ./exampleB3 run1.mac > /dev/null 2>&1
+$ ./exampleB3 run.mac > /dev/null 2>&1
 ```
 
 
