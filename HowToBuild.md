@@ -39,9 +39,9 @@ $ make
 $ ./exampleB3
 ```
 
-In Qt window, you can check beam condition by running the macro file by put **/control/execute run1.mac** in Session.
+In Qt window, you can check beam condition by running the macro file by put **/control/execute run.mac** in Session.
 
-#### 6. Obtain data with macro file **run1.mac**  
+#### 6. Obtain data with macro file **run.mac**  
 
 ```
 $ ./exampleB3 run.mac
