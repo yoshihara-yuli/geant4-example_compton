@@ -24,7 +24,7 @@ $ cmake -DGeant4_DIR=/Home/Geant4/einstall/lib64/Geant4-9.6.4 ../source
 ```
 
  - The path of **-DGeant4_DIR (/Home/Geant4/...) should be changed according to your geant4 installation location**.
- - If cmake doesn't suceeded because of some of error, please **remove invisible files such as ~\*.cc or ~\*.hh in source/src or source/include**, which might cause cmake errors.  </font>
+ - If cmake doesn't suceed because of some errors, please **remove invisible files such as ~\*.cc or ~\*.hh in source/src or source/include**, which might cause the cmake errors.
 
 
 #### 4. Make  (Build)
@@ -41,7 +41,7 @@ $ ./exampleB3
 
 In Qt window, you can check beam condition by running the macro file by put **/control/execute run.mac** in Session.
 
-#### 6. Obtain data with macro file **run.mac**  
+#### 6. Obtain data with macro file (**run.mac**)  
 
 ```
 $ ./exampleB3 run.mac
