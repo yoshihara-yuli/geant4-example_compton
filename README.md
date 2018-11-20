@@ -26,10 +26,15 @@ These characteriscis of geometry are defined in [**UserDetectorConstruction.cc**
 
 ## 3) Source
 
- Point source: uniform irradiation of Cs-137 at the origin (0,0,0). 
+Point source: uniform irradiation of Cs-137 at the origin (0,0,0). 
  
- These characteriscis of raidaoctive source are defined in [**UserPrimaryGeneratorAction.cc**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/source/src/UserPrimaryGeneratorAction.cc) in source/src/. 
- Please modify it if you want to change raidaoctive source.
+The source is defined by using **G4GeneralParticleSource (GPS)** class, instead of G4ParticleGun class. (simple change of UserPrimaryGeneratorAction.cc by globally replacing G4ParticleGun with G4GeneralParticleSource.)
+ 
+These characteriscis of raidaoctive source are now defined in macro file [**run.mac**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/test/source/run.mac) in source/src/. Please modify it if you want to change raidaoctive source.
+
+Besides, if you want to define **mutiple sources**, you can uncomment several sentences corresponding to the definition of multiple sources in run.mac (commented in the current run.mac). 
+
+(Modified on Nov.20, 2018)
 
 ## 4) Data Output
  The simulation results are output in **result.txt**.  
@@ -38,7 +43,7 @@ These characteriscis of geometry are defined in [**UserDetectorConstruction.cc**
  [**analysis.py**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/analysis/analysis.py) is uploaded for basic analysis of the simulation data. 
  You can start to check and analize data by using this code.
  
- Geant4 output data format is defined in [**ExN02TrackerSD.cc**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/test/source/src/ExN02TrackerSD.cc) in source/src/. 
+ Geant4 output data format is defined in [**ExN02TrackerSD.cc**]() in source/src/. 
  Please modify it if you want to change data format.
 
 # Geant4 output data format 
@@ -66,4 +71,4 @@ Especially in the eight information, these four information should be in your co
 
 Generally, you don't have to analize **posx**, **posy**, **posz**, **time**, **track**, **particle**, which are information obtained only through simulation (not experiment). There might be sometimes useful for simulation check.  
 
-**Caution!** These six information (posx, poy, posz, time, track, particle) are only for the interaction at the end step in the GAGG crystal. (Please see definition of 'steps' or 'cuts', [This doumentation](https://agenda.infn.it/getFile.py/access?sessionId=2&resId=0&materialId=0&confId=10937) might be helpful.)
+**Caution!** These six information (posx, poy, posz, time, track, particle) are only for the interaction at the end step in the GAGG crystal. (You can see the definitions of 'steps' or 'cuts', in [this doumentation](https://agenda.infn.it/getFile.py/access?sessionId=2&resId=0&materialId=0&confId=10937).)

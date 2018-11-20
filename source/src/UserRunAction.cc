@@ -98,41 +98,25 @@ void UserRunAction::BeginOfRunAction(const G4Run* run)
 
 void UserRunAction::EndOfRunAction(const G4Run* run)
 {
+
+
   G4int NbOfEvents = run->GetNumberOfEvent();
   if (NbOfEvents == 0) return;
   
   // run conditions
-  const UserPrimaryGeneratorAction* kinematic 
-    = static_cast<const UserPrimaryGeneratorAction*>(
-        G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
-  G4ParticleDefinition* particle 
-    = kinematic->GetParticleGun()->GetParticleDefinition();
-  G4String partName = particle->GetParticleName();                       
+  //const UserPrimaryGeneratorAction* kinematic 
+  //  = static_cast<const UserPrimaryGeneratorAction*>(
+  //      G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+  //G4ParticleDefinition* particle 
+  //  = kinematic->GetParticleGun()->GetParticleDefinition();
+  //G4String partName = particle->GetParticleName();                       
         
   // print
   G4cout
      << "\n--------------------End of Run------------------------------\n"
-     << " The run was " << NbOfEvents << " "<< partName
-     << "; Nb of 'good' e+ annihilations: " << fGoodEvents
-     << "\n Total dose in patient : " << G4BestUnit(fSumDose,"Dose")   
+     << " The run was " << NbOfEvents 
      << "\n------------------------------------------------------------\n"
      << G4endl;
-
-    G4cout << "\n--------------------About Data------------------------------\n"
-    << "Dataformat is given as below (tab split)\n"
-    << "   eventID"  // [yy]
-    << ", "  << "moduleNo" // [yy] granma
-    << ", "  << "boxNo"    // [yy] mother
-    << ", "  << "voxelNo"  // [yy] person
-    << ", "  << "edep_MeV"
-    << "\n"  << "   posx_mm"
-    << ", "  << "posy_mm"
-    << ", "  << "posz_mm"
-    << ", "  << "time_ns"
-    << "\n"  << "   trackID"
-    << ", "  << "particle"
-    << "\n--------------------About Data------------------------------\n"
-    << std::endl;
 
   // close the output file.
   ofs.close();

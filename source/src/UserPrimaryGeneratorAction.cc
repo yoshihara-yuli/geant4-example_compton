@@ -40,15 +40,22 @@
 #include "Randomize.hh"
 #include "math.h"
 #include "G4SystemOfUnits.hh"
+#include "G4GeneralParticleSource.hh" // for GPS
 
-#define PI 3.141592
+//#define PI 3.141592
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 UserPrimaryGeneratorAction::UserPrimaryGeneratorAction()
  : G4VUserPrimaryGeneratorAction(),
-   fParticleGun(0)
+   gpsParticleGun(0) // for gps
+   //fParticleGun(0) // for not gps
 {
+  
+  gpsParticleGun = new G4GeneralParticleSource(); // for gps
+    
+  /*
+  // if not use gps, these must be necessary to define the initial condition of the source
   fParticleGun  = new G4ParticleGun(1);
   particleEnergy = 662.*keV;
 
@@ -62,14 +69,15 @@ UserPrimaryGeneratorAction::UserPrimaryGeneratorAction()
   fParticleGun->SetParticlePosition(G4ThreeVector(posX,posY,posZ)); // paricle position
   fParticleGun->SetParticleEnergy(particleEnergy);            // paricle energy
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));  // irradiation direction 
-
+  */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 UserPrimaryGeneratorAction::~UserPrimaryGeneratorAction()
 {
-  delete fParticleGun;
+  // delete fParticleGun; // for not gps
+  delete gpsParticleGun;  // for gps
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,7 +85,10 @@ UserPrimaryGeneratorAction::~UserPrimaryGeneratorAction()
 void UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 
-  //4pi uniform irradiation
+  gpsParticleGun->GeneratePrimaryVertex(anEvent); // for gps
+    
+  /*
+  //4pi uniform irradiation (for not gps)
   dirZ = G4UniformRand()*2-1;
   phi = G4UniformRand()*2*PI;
   dirX = sqrt(1-dirZ*dirZ)*cos(phi);
@@ -85,7 +96,7 @@ void UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(dirX,dirY,dirZ)); 
 
   fParticleGun->GeneratePrimaryVertex(anEvent); // generate perticle
-
+  */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

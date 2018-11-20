@@ -34,6 +34,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
+#include "G4GeneralParticleSource.hh"
 
 class G4ParticleGun;
 class G4Event;
@@ -41,17 +42,24 @@ class G4Event;
 class UserPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
+    
     UserPrimaryGeneratorAction();    
     virtual ~UserPrimaryGeneratorAction();
     virtual void GeneratePrimaries(G4Event*);         
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+    //const G4ParticleGun* GetParticleGun() const { return fParticleGun; } // for not gps
   
   private:
-    G4ParticleGun*  fParticleGun;
+    
+    //G4ParticleGun*  fParticleGun; // for not gps
+    G4GeneralParticleSource* gpsParticleGun; // for gps
+    
+    /*
+    // for not gps
     G4double phi;
-    G4double dirX, dirY, dirZ;  
+    G4double dirX, dirY, dirZ;
     G4double particleEnergy; 
     G4int nuclide;
+    */
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
