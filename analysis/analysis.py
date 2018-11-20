@@ -48,26 +48,34 @@ def main():
     map = y.reshape((16,8))
     plt.pcolor(map)
 
-    # energy spectrum (ideal energy resolution)
+    # energy spectrum
     plt.figure()
-    x = np.linspace(0,0.700,100)
-    y = np.histogram(data["edep"],bins=x)[0]
-    plt.plot(x[:-1],y)
-    plt.xlabel("Energy [MeV]")
+    x = np.linspace(0,800,201)
+    y = np.histogram(data["edep"]*1000,bins=x)[0]
+    plt.plot(x[:-1],y,'b.',linestyle='solid')
+    plt.xlabel("Energy [keV]")
     plt.ylabel("Counts [#]")
+
+    plt.figure()
+    plt.title("Ideal position")
+    plt.hist(data["posx"],bins=30,label="x")
+    plt.hist(data["posy"],bins=28,label="y")
+    plt.hist(data["posz"],bins=28,label="z")
+    plt.legend()
 
     # position calibration (module,box,voxel) -> (x,y,z)
     scamask = data["box"]==0
     absmask = data["box"]==1
-    data["posx"][scamask] = 102.5 # distance_source_sca+scavoxel_sizeX/2
-    data["posx"][absmask] = 190.  # distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX/
-    data["posy"] = (data["voxel"]/8)*10. - 35. # (i+0.5)*scavoxel_sizeY-scabox_sizeY*0.5
-    data["posz"] = (data["voxel"]%8)*10. - 35. # (j+0.5)*scavoxel_sizeZ-scabox_sizeZ*0.5
+    data["posx"][scamask] = 402.5 # distance_source_sca+scavoxel_sizeX/2
+    data["posx"][absmask] = 490.  # distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX/
+    data["posy"] = (data["voxel"]/8)*11. - 37.5 # (i+0.5)*scavoxel_sizeY-scabox_sizeY*0.5
+    data["posz"] = (data["voxel"]%8)*11. - 37.5 # (j+0.5)*scavoxel_sizeZ-scabox_sizeZ*0.5
     # x,y,z after converting
     plt.figure()
-    plt.hist(data["posx"],bins=10,label="x")
-    plt.hist(data["posy"],bins=8,label="y")
-    plt.hist(data["posz"],bins=8,label="z")
+    plt.title("Calibrated position")
+    plt.hist(data["posx"],bins=30,label="x")
+    plt.hist(data["posy"],bins=28,label="y")
+    plt.hist(data["posz"],bins=28,label="z")
     plt.legend()
     plt.show()
 
