@@ -30,13 +30,13 @@
 /gps/ene/type Mono
 /gps/ene/mono 662 keV
 
-# if you want to use multiple source...
-/gps/source/add 1. # relative intensity (compared with the first source)
-/gps/particle gamma
-/gps/pos/type Point
-/gps/pos/centre 0 10 0 cm 
-/gps/ang/type iso
-/gps/ene/mono 662 keV
+# if you want to use multiple sources...
+#/gps/source/add 1. # relative intensity (compared with the first source)
+#/gps/particle gamma
+#/gps/pos/type Point
+#/gps/pos/centre 0 10 0 cm 
+#/gps/ang/type iso
+#/gps/ene/mono 662 keV
 
 # ----------------------------------------------
 # run
