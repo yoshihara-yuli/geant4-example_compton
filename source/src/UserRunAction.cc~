@@ -114,7 +114,9 @@ void UserRunAction::EndOfRunAction(const G4Run* run)
   // print
   G4cout
      << "\n--------------------End of Run------------------------------\n"
-     << " The run was " << NbOfEvents 
+     << " The run was " << NbOfEvents << " "<< partName
+     << "; Nb of 'good' e+ annihilations: " << fGoodEvents
+     << "\n Total dose in patient : " << G4BestUnit(fSumDose,"Dose")   
      << "\n------------------------------------------------------------\n"
      << G4endl;
 

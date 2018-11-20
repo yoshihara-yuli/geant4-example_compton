@@ -1,0 +1,52 @@
+# $Id: run1.mac,v 1.6 2002-12-16 16:37:25 maire Exp $
+# Macro file of "exampleB3.cc"
+
+# ----------------------------------------------
+# Setting
+# ----------------------------------------------
+
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+/gps/verbose 0
+
+# ----------------------------------------------
+# Particle (GPS)
+# ----------------------------------------------
+
+# --- Gamma-ray point source --- 
+
+/gps/particle gamma
+/gps/source/intensity 1. # not necessary for single source
+
+# Position and Structure
+/gps/pos/type Point
+/gps/pos/centre 0 0 0 cm 
+
+# Direction and Angular
+/gps/ang/type iso
+
+# Energy
+/gps/ene/type Mono
+/gps/ene/mono 662 keV
+
+# if you want to use multiple sources...
+#/gps/source/add 1. # relative intensity (compared with the first source)
+#/gps/particle gamma
+#/gps/pos/type Point
+#/gps/pos/centre 0 10 0 cm 
+#/gps/ang/type iso
+#/gps/ene/mono 662 keV
+
+# ----------------------------------------------
+# run
+# ----------------------------------------------
+
+/run/initialize
+
+# Number of beams generated
+/run/beamOn 100     # for check 
+#/run/beamOn 100000 # for batch mode 
+
+
+

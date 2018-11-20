@@ -1,9 +1,0 @@
-# $Id: run1.mac,v 1.6 2002-12-16 16:37:25 maire Exp $
-# Macro file of "exampleB3.cc"
-#
-/control/verbose 2
-/tracking/verbose 1
-/run/beamOn 20
-
-# ./exampleB3 run1.mac > /dev/null 2>&1
-
