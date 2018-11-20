@@ -29,10 +29,13 @@ These characteriscis of geometry are defined in [**UserDetectorConstruction.cc**
 Point source: uniform irradiation of Cs-137 at the origin (0,0,0). 
  
 The source is defined by using **G4GeneralParticleSource (GPS)** class, instead of G4ParticleGun class. (simple change of UserPrimaryGeneratorAction.cc by globally replacing G4ParticleGun with G4GeneralParticleSource.)
- 
-These characteriscis of raidaoctive source are now defined in macro file [**run.mac**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/test/source/run.mac) in source/src/. Please modify it if you want to change raidaoctive source.
 
-Besides, if you want to define **mutiple sources**, you can uncomment several sentences corresponding to the definition of multiple sources in run.mac (commented in the current run.mac). 
+See p.22-26 in [**Geant4 User's Guide for
+Application Developers**](https://gentoo.osuosl.org/distfiles/BookForAppliDev-4.10.2.pdf) about How to use GPS class.
+
+These characteriscis of raidaoctive source are now defined in macro file [**run.mac**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/source/run.mac) in source/src/. Please modify it if you want to change raidaoctive source.
+
+Besides, if you want to define **mutiple sources**, you can uncomment several sentences (L.34-39) corresponding to the definition of multiple sources in run.mac (They are commented in the current run.mac). 
 
 (Modified on Nov.20, 2018)
 
