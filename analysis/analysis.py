@@ -40,6 +40,8 @@ def main():
     data = np.genfromtxt(filname,delimiter='\t',skip_header=1,dtype=geant4_dtype)
     print data[0]
 
+    data["edep"] = data["edep"]*1000. # MeV -> keV
+
     # pixel hear map
     voxel = data["voxel"]+64*data["box"] # absorber voxel -> 64-127
     plt.figure()
@@ -51,7 +53,7 @@ def main():
     # energy spectrum
     plt.figure()
     x = np.linspace(0,800,201)
-    y = np.histogram(data["edep"]*1000,bins=x)[0]
+    y = np.histogram(data["edep"],bins=x)[0]
     plt.plot(x[:-1],y,'b.',linestyle='solid')
     plt.xlabel("Energy [keV]")
     plt.ylabel("Counts [#]")
@@ -66,10 +68,18 @@ def main():
     # position calibration (module,box,voxel) -> (x,y,z)
     scamask = data["box"]==0
     absmask = data["box"]==1
-    data["posx"][scamask] = 402.5 # distance_source_sca+scavoxel_sizeX/2
-    data["posx"][absmask] = 490.  # distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX/
+    distance_source_sca = 400.
+    scavoxel_sizeX = 5.
+    absvoxel_sizeX = 10.
+    distance_sca_abs = 110. ### parameters for this simulation
+    print(distance_source_sca+scavoxel_sizeX*0.5)
+    print(distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX*0.5)
+
+    data["posx"][scamask] = distance_source_sca+scavoxel_sizeX*0.5 # 400+2.5 = 402.5
+    data["posx"][absmask] = distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX*0.5 # 400+5+X+5 = X+410
     data["posy"] = (data["voxel"]/8)*11. - 37.5 # (i+0.5)*scavoxel_sizeY-scabox_sizeY*0.5
     data["posz"] = (data["voxel"]%8)*11. - 37.5 # (j+0.5)*scavoxel_sizeZ-scabox_sizeZ*0.5
+
     # x,y,z after converting
     plt.figure()
     plt.title("Calibrated position")
@@ -77,6 +87,43 @@ def main():
     plt.hist(data["posy"],bins=28,label="y")
     plt.hist(data["posz"],bins=28,label="z")
     plt.legend()
+
+    #plt.show()
+    #sys.exit()
+
+    j = 0
+    firsts = np.zeros([],dtype=geant4_dtype)
+    seconds = np.zeros([],dtype=geant4_dtype)
+    for i,id_ in enumerate(np.unique(data["event"])):
+        mask = data["event"]==id_
+        if np.sum(mask)==2 and np.sum(data[mask]["box"])==1: # two coincidences and interplane
+            j += 1
+            datalet = data[mask]
+            firsts  = np.hstack((firsts,datalet[datalet["box"]==0]))
+            seconds = np.hstack((seconds,datalet[datalet["box"]==1]))
+        if i%1000==0: print("i: %d, event id: %d"%(i,id_))
+        #if i==10000: break
+            
+    print("All events: %d, Extracted interplane coincident events: %d (%.2f)"%(i,j,float(i)/j*100.))
+
+    np.save("firsts.npy",firsts)
+    np.save("seconds.npy",seconds)
+
+    plt.figure()
+    plt.title("Correlation plot")
+    xmin,xmax,xbin = 0,900,10
+    X = np.arange(xmin,xmax,xbin)
+    xx = np.arange((xmax-xmin)/xbin)
+    h,x,y=np.histogram2d(seconds['edep'],firsts['edep'],bins=X)
+    plt.imshow(np.log(h+1)[:-1,:-1],interpolation='nearest')
+    ax = plt.gca()
+    ax.invert_yaxis()
+    plt.colorbar()
+    plt.xlabel('Scatter [keV]')
+    plt.ylabel('Absorber [keV]')
+    plt.xticks(xx[::20],X[::20])
+    plt.yticks(xx[::20],X[::20])
+
     plt.show()
 
 if __name__=='__main__':

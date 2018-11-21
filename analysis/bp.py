@@ -8,6 +8,7 @@ import matplotlib.cm as cm
 import datetime
 import glob 
 #import gausfit2d as gf2d
+plt.rcParams["font.size"] = 18
 # ==========================================
 class Vector:
     def __init__(self,x,y,z):
@@ -50,10 +51,10 @@ def Gaussian2(O1,O2,ARM):
     val = np.exp(-(0.5*np.multiply((index-mean)/sig,(index-mean)/sig)))
     return val
 
-def Project2D(first,second,X=[],Y=[],Z0=0.,cnt=0,Arm=10.):
+def Project2D(first,second,X=[],Y=[],Z0=0.,cnt=0,Arm=10.,fwhm=0.12):
 
     E = 662.
-    dE = 30.
+    dE = E*fwhm/2.
     xs,ys,zs,es = first['posy'],first['posz'],first['posx'],first['edep']
     xa,ya,za,ea = second['posy'],second['posz'],second['posx'],second['edep']
     
@@ -105,7 +106,7 @@ def SetDisplay(xmin,xmax,ymin,ymax,n_bins,width=50):
 
 ###############################
 
-def main_test():
+def main():
     
     time0=time.clock()
     
@@ -117,7 +118,7 @@ def main_test():
     xmin,xmax = -200,200
     ymin,ymax = -200,200
     #zmin,zmax = 10,510
-    bins = 401
+    bins = 201
     x = np.linspace(xmin,xmax,bins)
     y = np.linspace(ymin,ymax,bins)
     #z = np.linspace(zmin,zmax,bins)
@@ -132,7 +133,7 @@ def main_test():
     
     for k in range(len(firsts)):
                 
-       tempmap,cnt = Project2D(firsts[k],seconds[k],Xy,Yx,Z0,cnt,Arm=10.)
+       tempmap,cnt = Project2D(firsts[k],seconds[k],Xy,Yx,Z0,cnt,Arm=4.)
        map_xy = map_xy + tempmap
        td = time.clock()-time0
                 
@@ -146,75 +147,12 @@ def main_test():
 
     plt.figure()
     plt.imshow(map_xy[::-1,:]/map_xy.max(),cmap=cm.gist_earth,aspect='equal')
-    #SetDisplay(obj.Size,obj.Width,obj.Bin)
     SetDisplay(xmin,xmax,ymin,ymax,bins)
+    plt.tight_layout()
+    plt.savefig("map2d.eps",format='eps',dpi=100)
     plt.show()
-
-###############################
-
-def main():
-
-    time0=time.clock()
-
-    # -- setting for output file and directory
-    dname = sys.argv[1]
-        
-    n_fil_max = len(glob.glob(dname+"/db2/*_2.npy"))
-    
-    # projection parameters
-    xmin,xmax = -200,200
-    ymin,ymax = -200,200
-    zmin,zmax = 10,310
-    bins = 200
-    x = np.linspace(xmin,xmax,bins)
-    y = np.linspace(ymin,ymax,bins)
-    z = np.linspace(zmin,zmax,bins)
-
-    Xy = np.meshgrid(x,y)[0]
-    Yx = np.meshgrid(x,y)[1]
-    map_xy = np.zeros(np.shape(Xy))
-
-    X0,Y0,Z0 = 0.,0.,0.
-
-    cnt = 0
-    n_event = 0
-
-    for n_fil in range(n_fil_max):
-
-        # data load
-        filin1 = ("%d_1.npy"%n_fil).zfill(11)
-        filin2 = ("%d_2.npy"%n_fil).zfill(11)
-        if os.path.exists(dname+"/db2/"+filin1) and os.path.exists(dname+"/db2/"+filin2):
-
-            firsts = np.load(dname+'/db2/'+filin1)
-            seconds = np.load(dname+'/db2/'+filin2)
-
-            for k in range(len(firsts)):
-
-                n_event += 1
-
-                tempmap,cnt = Project2D(firsts[k],seconds[k],Xy,Yx,Z0,cnt,Arm=10.)
-                map_xy = map_xy + tempmap
-                td = time.clock()-time0
-                
-                sys.stdout.write('\r')
-                sys.stdout.write('File: %d, Event # = %d, Cone # = %d, Time = %.2f sec.'%(n_fil,n_event,cnt,td))
-                sys.stdout.flush()
-
-    print("Finish all data: %d"%n_fil_max)
-    
-    np.save("bp_map.npy",map_xy)
-
-    plt.figure()
-    plt.imshow(map_xy[::-1,:]/map_xy.max(),
-               cmap=cm.gist_earth,aspect='equal')
-    SetDisplay(obj.Size,obj.Width,obj.Bin)                                
-    plt.show()
-
-                   
                    
 ##################################
 if __name__ =='__main__':
-    #main()
-    main_test()
+    main()
     sys.exit('Fin ! :)')
