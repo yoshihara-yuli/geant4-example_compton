@@ -161,8 +161,8 @@ void ExN02TrackerSD::EndOfEvent(G4HCofThisEvent* HCE)
         
         G4double edep_keV = 1000.*(hit->GetEdep()/MeV);
         
-        G4double K = 1.314; // FWHM 12% @ 662keV
-        //G4double K = 1.094; // FWHM 10% @ 662keV
+        //G4double K = 1.314; // FWHM 12% @ 662keV
+        G4double K = 1.094; // FWHM 10% @ 662keV
         //G4double K = 0.657; // FWHM 6% @ 662keV
         //G4double K = 0.547; // FWHM 5% @ 662keV
         //G4double K = 0.438; // FWHM 4% @ 662keV

@@ -140,7 +140,7 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
   G4int number_of_absvoxel_dimZ  =  8;  
 
   // distances
-  G4double distance_source_sca  = 300.0  *mm; // distance between scatter and origin(0,0,0)
+  G4double distance_source_sca  = 400.0  *mm; // distance between scatter and origin(0,0,0)
   G4double distance_sca_abs     = 110.0  *mm; // distance between absorber and scatter
 
   // module
