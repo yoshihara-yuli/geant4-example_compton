@@ -4,6 +4,10 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
 ## History
  - 2016.11.11 created  
  - 2018.9.6. revised  
+
+## Recommended References for beginners
+
+- [**Tutorial Notes for Novice Users**](https://wiki.kek.jp/display/geant4/Tutorial+Notes+for+Novice+Users) (in Japanese)
  
 ## 1) Build & Run 
  See [**HowToBuild**](https://github.com/yoshihara-yuli/geant4-example_compton/blob/master/HowToBuild.md) about how to build and run.
