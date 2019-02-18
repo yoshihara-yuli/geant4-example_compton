@@ -7,6 +7,8 @@ Sample geometry: Compton camera with GAGG (Geant4 4.9.6.p03 code)
 
 ## Recommended References for beginners
 
+- [**Geant4 User's Guide for
+Application Developers**](https://gentoo.osuosl.org/distfiles/BookForAppliDev-4.10.2.pdf) (in English)
 - [**Tutorial Notes for Novice Users**](https://wiki.kek.jp/display/geant4/Tutorial+Notes+for+Novice+Users) (in Japanese)
  
 ## 1) Build & Run 
