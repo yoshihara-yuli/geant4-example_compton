@@ -1,0 +1,25 @@
+# $Id: run1.mac,v 1.6 2002-12-16 16:37:25 maire Exp $
+# Macro file of "exampleB3.cc"
+
+# ----------------------------------------------
+# Setting
+# ----------------------------------------------
+
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+#/gun/particle e-
+#/gun/energy 1173 keV # 1173 1333
+
+# ----------------------------------------------
+# run
+# ----------------------------------------------
+
+/run/initialize
+
+# Number of beams generated
+/run/beamOn 1     # for check 
+#/run/beamOn 10000 # for batch mode 
+
+
+

@@ -50,16 +50,18 @@ class UserPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   
   private:
     
-    //G4ParticleGun*  fParticleGun; // for not gps
-    G4GeneralParticleSource* gpsParticleGun; // for gps
+    G4ParticleGun*  fParticleGun; // for not gps
+    //G4GeneralParticleSource* gpsParticleGun; // for gps
     
-    /*
+    
     // for not gps
     G4double phi;
     G4double dirX, dirY, dirZ;
+  G4double posX,posY,posZ;
+  G4double theta,L;
     G4double particleEnergy; 
     G4int nuclide;
-    */
+    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

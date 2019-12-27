@@ -55,11 +55,12 @@ class UserDetectorConstruction : public G4VUserDetectorConstruction
     void DefineMaterials();
     void CreateScorers();
 
-    G4LogicalVolume*  logicScavoxel; // declare of scatter SD as global variable
-    G4LogicalVolume*  logicAbsvoxel; // declare of absorber SD as global variable
-    G4LogicalVolume*  fLogicPatient;
-    
-  G4bool  fCheckOverlaps;
+    G4LogicalVolume*  logicBox; 
+    G4LogicalVolume*  logicVoxel; // declare of sensitive detector
+    G4LogicalVolume*  logicPipe;  
+    G4bool  fCheckOverlaps;
+    G4VPhysicalVolume* physPipe;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
