@@ -107,6 +107,18 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
     CsI-> AddElement(elCs, 1);
     CsI-> AddElement(elI,  1);
     
+    // Al
+    G4Material* Al = new G4Material("Aluminum", z=13., a=26.98*g/mole, density=2.7*g/cm3);
+
+    // Steel
+    G4Element* elFe = G4NistManager::Instance()->FindOrBuildElement("Fe");
+    G4Element* elNi = G4NistManager::Instance()->FindOrBuildElement("Ni");
+    G4Element* elCr = G4NistManager::Instance()->FindOrBuildElement("Cr");
+    G4Material* Steel = new G4Material("StainlessSteel", 7.80 * g/cm3, 3);
+    Steel -> AddElement(elFe, 70 * perCent);
+    Steel -> AddElement(elCr, 18 * perCent);
+    Steel -> AddElement(elNi, 12 * perCent);
+    
     // --------------- Geometory Definition -------------------
     
     // --- Overview of geometry ---

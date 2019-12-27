@@ -45,7 +45,8 @@ class UserPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     
     UserPrimaryGeneratorAction();    
     virtual ~UserPrimaryGeneratorAction();
-    virtual void GeneratePrimaries(G4Event*);         
+    virtual void GeneratePrimaries(G4Event*);
+    //G4double posX,posY,posZ;
     //const G4ParticleGun* GetParticleGun() const { return fParticleGun; } // for not gps
   
   private:

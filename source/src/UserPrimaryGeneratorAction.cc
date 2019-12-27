@@ -44,12 +44,15 @@
 
 #define PI 3.141592
 
+//extern std::ofstream ofs2;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 UserPrimaryGeneratorAction::UserPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
 //gpsParticleGun(0) // for gps
 fParticleGun(0) // for not gps
+//posX(0),posY(0),posZ(0)
 {
     
     //gpsParticleGun = new G4GeneralParticleSource(); // for gps
@@ -59,8 +62,23 @@ fParticleGun(0) // for not gps
     fParticleGun  = new G4ParticleGun(1);
     particleEnergy = 1173*keV;
     
+    // Pipe
+    theta = G4UniformRand()*PI;
+    L = (G4UniformRand()*7/2+41.6/2) *mm;
+    posX = L*cos(theta);
+    posY = (G4UniformRand()*50 - 25) *mm;
+    posZ = L*sin(theta);
+    
+    /*
+    ofs2  << "source position [mm]"
+    << "\t"  << "posx" << posX  // [yy]
+    << "\t"  << "posy" << posY
+    << "\t"  << "posz" << posZ
+    << std::endl;
+    */
+    
     // Initial parameters
-    posX=0*cm, posY=0*cm, posZ=0*cm; // Source position (constant)
+    //posX=0*cm, posY=0*cm, posZ=0*cm; // Source position (constant)
     
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     G4String particleName;
@@ -89,13 +107,25 @@ void UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     
     //4pi uniform irradiation (for not gps)
-    theta = G4UniformRand()*PI;
-    L = (G4UniformRand()*7/2+41.6/2) *mm;
-    posX = L*cos(theta);
-    posY = (G4UniformRand()*50 - 25) *mm;
-    posZ = L*sin(theta);
     
-    particleEnergy = 1173*keV;
+    // plane
+     /*
+     posX = (G4UniformRand()*100-50) *mm;
+     posY = (G4UniformRand()*100-50) *mm;
+     posZ = 0*mm;
+     */
+    
+     /*
+     // Pipe
+     theta = G4UniformRand()*PI;
+     L = (G4UniformRand()*7/2+41.6/2) *mm;
+     posX = L*cos(theta);
+     posY = (G4UniformRand()*50 - 25) *mm;
+     posZ = L*sin(theta);
+     */
+    
+    particleEnergy = 1*eV; // for checking
+    //particleEnergy = 1173*keV;
     dirZ = G4UniformRand()*2-1;
     phi = G4UniformRand()*2*PI;
     dirX = sqrt(1-dirZ*dirZ)*cos(phi);
@@ -103,10 +133,10 @@ void UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     fParticleGun->SetParticleEnergy(particleEnergy);            // paricle energy
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(dirX,dirY,dirZ));
-    fParticleGun->SetParticlePosition(G4ThreeVector(posX,posY,posZ)); // paricle position
+    //fParticleGun->SetParticlePosition(G4ThreeVector(posX,posY,posZ)); // paricle position
     fParticleGun->GeneratePrimaryVertex(anEvent); // generate perticle
     
-    particleEnergy = 1333*keV;
+    //particleEnergy = 1333*keV;
     dirZ = G4UniformRand()*2-1;
     phi = G4UniformRand()*2*PI;
     dirX = sqrt(1-dirZ*dirZ)*cos(phi);
@@ -120,6 +150,7 @@ void UserPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 
 
