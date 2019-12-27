@@ -94,6 +94,19 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
     gagg -> AddElement(elGa,  3);
     gagg -> AddElement(elO , 12);
     
+    // NaI crystal
+    G4Element* elNa = new G4Element("Sodium",  "Na", z=11., a= 22.989768*g/mole);
+    G4Element* elI  = new G4Element("Iodine",  "I",  z=53., a= 126.90447*g/mole);
+    G4Material* NaI = new G4Material("NaI", density=3.67 *g/cm3, 2);
+    NaI-> AddElement(elNa, 1);
+    NaI-> AddElement(elI,  1);
+    
+    // CsI crystal
+    G4Element* elCs = new G4Element("Cesium",  "Cs", z=55., a= 132.90543*g/mole);
+    G4Material* CsI = new G4Material("CsI", density=4.51 *g/cm3, 2);
+    CsI-> AddElement(elCs, 1);
+    CsI-> AddElement(elI,  1);
+    
     // --------------- Geometory Definition -------------------
     
     // --- Overview of geometry ---
@@ -223,7 +236,7 @@ G4VPhysicalVolume* UserDetectorConstruction::Construct()
     // logical volume definition (material)
     logicVoxel =
     new G4LogicalVolume(solidVoxel,          // its solid
-                        gagg,                   // its material
+                        NaI,                   // its material
                         "Voxel");            // its name
     
     // physical volume definition (position, relation, copy number)
