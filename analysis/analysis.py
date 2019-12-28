@@ -35,40 +35,51 @@ geant4_dtype = np.dtype([("event",np.int),  # beam number
 def main():
 
     filname = sys.argv[1]
+    beam_no = 1e+8 # sys.argv[2]
+
+    format = filname.split(".")[-1]
 
     # load data
-    data = np.genfromtxt(filname,delimiter='\t',skip_header=1,dtype=geant4_dtype)
-    print data[0]
+    if format != "npy":
+        data = np.genfromtxt(filname,delimiter='\t',skip_header=1,
+                             dtype=geant4_dtype)
+        filname_npy = filname.split(format)[0]+"npy"
+        np.save(filname_npy,data)
+        sys.exit("fin. next action: python analysis %s"%filname_npy)
+    else:
+        data = np.load(filname)
+        print data[0]
+
+    eth = 0 # energy threshold [MeV]
+    mask = data["edep"]>=eth
+    data_eth = data[mask]
+
+    detect_no = len(np.unique(data_eth))
+
+    print(beam_no*1.0/(detect_no*1.0))
 
     # pixel hear map
-    voxel = data["voxel"]+64*data["box"] # absorber voxel -> 64-127
+    voxel = data["voxel"] # absorber voxel -> 64-127
+    print(np.max(data["voxel"]))
     plt.figure()
-    x = np.arange(129)
+    x = np.arange(np.max(data["voxel"])+2)
     y = np.histogram(voxel,bins=x)[0]
-    map = y.reshape((16,8))
+    map = y.reshape((25,25))
+
+    plt.figure()
     plt.pcolor(map)
+    plt.colorbar()
+    plt.savefig("heatmap.png")
 
     # energy spectrum (ideal energy resolution)
     plt.figure()
-    x = np.linspace(0,0.700,100)
+    x = np.linspace(0,1.400,100)
     y = np.histogram(data["edep"],bins=x)[0]
     plt.plot(x[:-1],y)
     plt.xlabel("Energy [MeV]")
     plt.ylabel("Counts [#]")
-
-    # position calibration (module,box,voxel) -> (x,y,z)
-    scamask = data["box"]==0
-    absmask = data["box"]==1
-    data["posx"][scamask] = 102.5 # distance_source_sca+scavoxel_sizeX/2
-    data["posx"][absmask] = 190.  # distance_source_sca+scavoxel_sizeX+distance_sca_abs+absvoxel_sizeX/
-    data["posy"] = (data["voxel"]/8)*10. - 35. # (i+0.5)*scavoxel_sizeY-scabox_sizeY*0.5
-    data["posz"] = (data["voxel"]%8)*10. - 35. # (j+0.5)*scavoxel_sizeZ-scabox_sizeZ*0.5
-    # x,y,z after converting
-    plt.figure()
-    plt.hist(data["posx"],bins=10,label="x")
-    plt.hist(data["posy"],bins=8,label="y")
-    plt.hist(data["posz"],bins=8,label="z")
-    plt.legend()
+    plt.tight_layout()
+    plt.savefig("energy.png")
     plt.show()
 
 if __name__=='__main__':
