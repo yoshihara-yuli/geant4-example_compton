@@ -3,6 +3,7 @@
 import os,sys
 import numpy as np
 import matplotlib.pylab as plt
+import glob
 
 # Geant4 output data format 
 geant4_dtype = np.dtype([("event",np.int),  # beam number 
@@ -32,31 +33,48 @@ geant4_dtype = np.dtype([("event",np.int),  # beam number
 # These are information only for simulation, and can be used for simulation check.
 # These are the information for interaction at last step for the GAGG crystal.
 
+def data_import(filname,format="txt"):
+    data = np.genfromtxt(filname,delimiter='\t',skip_header=1,
+                         dtype=geant4_dtype)
+    filname_npy = filname.split(format)[0]+"npy"
+    np.save(filname_npy,data)
+    return data
+
 def main():
 
-    filname = sys.argv[1]
+    filname = sys.argv[1] # file or directory name
     beam_no = 1e+8 # sys.argv[2]
-    randdir = sys.argv[2]
 
-    format = filname.split(".")[-1]
+    if os.path.isfile(filname): # file
+        format = filname.split(".")[-1]
 
-    # load data
-    if format != "npy":
-        data = np.genfromtxt(filname,delimiter='\t',skip_header=1,
-                             dtype=geant4_dtype)
-        filname_npy = filname.split(format)[0]+"npy"
-        np.save(filname_npy,data)
-        sys.exit("fin. next action: python analysis %s"%filname_npy)
-    else:
-        print("npy file already created")
-        data = np.load(filname)
-        print data[0]
+        if format=="npy":
+            print("npy file already created")
+            data = np.load(filname)
+            print data[0]
+
+        else:
+            data = data_import(filname)
+            filname_npy = filname.split(format)[0]+"npy"
+            np.save(filname_npy,data)
+            sys.exit("fin. next action: python analysis %s"%filname_npy)
+
+    else: # directory
+        dirname = filname
+        filnames = glob.glob(dirname+"/*.txt")
+        for i,filname in enumerate(filnames):
+            print(i,filname)
+            format = filname.split(".")[-1]
+            data = data_import(filname)
+            filname_npy = filname.split(format)[0]+"npy"
+            np.save(filname_npy,data)
+        sys.exit("finish txt2npy for all %d files in %s"%(len(filnames),dirname))
 
     eth = 0 # energy threshold [MeV]
     mask = data["edep"]>=eth
     data_eth = data[mask]
 
-    detect_no = len(np.unique(data_eth))
+    detect_no = len(np.unique(data_eth["event"]))
 
     print(beam_no*1.0/(detect_no*1.0))
 
