@@ -81,7 +81,7 @@ def main():
     # pixel hear map
     voxel = data["voxel"] # absorber voxel -> 64-127
     print(np.max(data["voxel"]))
-    plt.figure()
+
     x = np.arange(np.max(data["voxel"])+2)
     y = np.histogram(voxel,bins=x)[0]
     map = y.reshape((25,25))
