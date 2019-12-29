@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Parameters for scan
-N=1000 # nunber of scan
+N=100 # nunber of scan
 DIR="data/" # directory for saved data`
 # Make directory for saved data
 mkdir -p ${DIR}
