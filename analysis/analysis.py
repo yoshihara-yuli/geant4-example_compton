@@ -3,6 +3,7 @@
 import os,sys
 import numpy as np
 import matplotlib.pylab as plt
+import glob
 
 # Geant4 output data format 
 geant4_dtype = np.dtype([("event",np.int),  # beam number 
@@ -17,71 +18,122 @@ geant4_dtype = np.dtype([("event",np.int),  # beam number
                          ("track",np.int),  # track id (the order of interaction process)
                          ("particle",np.int)]) # particle id (interacted particle)
 
-# Note:
-# Geant4 output data format is defined in ExN02TrackerSD.cc. 
-# (Please modify ExN02TrackerSD.cc if you want to change data format.)
 
-# [Used information]
-# module's id ... (deafult:0) if using muptiple Compton cameras, this indicates in which Comtpon camera the interaction is occured.
-# box's id ... 0=Scatter, 1=Absorber 
-# voxel's id ... 0-63 corresponding to each GAGG crystal.
-# edep ... energy deposition at the specific GAGG crystal.
+def imaging(data,eth,DEBUG=False):
 
-# [Not used information]
-# You don't have to analize 'posx', 'posy', 'posz', 'time', 'track', 'particle',
-# These are information only for simulation, and can be used for simulation check.
-# These are the information for interaction at last step for the GAGG crystal.
+    # energy-threthold cut
+    mask = data["edep"]>=eth
+    data = data[mask]
+    
+    voxel = np.arange(25*25+1)
+    voxel.astype(int)
+    y = np.histogram(data["voxel"],bins=voxel)[0]
+    map_= y.reshape((25,25))
+    
+    if DEBUG==True:
+        plt.figure()
+        plt.pcolor(map_)
+        plt.colorbar()
+        plt.savefig("heatmap.png")
+        plt.show()
 
-def main():
+    mask = y>np.max(y)/2.
+    voxel = voxel[:-1][mask]
+    #voxel = voxel[:-1]
+    posx = (voxel[:-1]%25-12.5)*2.+1.
+    posy = (voxel[:-1]//25-12.5)*2.+1.
+    #print(posx)
+    #print(posy)
 
-    filname = sys.argv[1]
-    beam_no = 1e+8 # sys.argv[2]
+    posz = np.sin(np.arccos(posy/24.0))*24.0
+    #idx_source = np.argmax(np.square(posx)+np.square(51.6-posz))
+    idx_source = np.argmax(np.square(posx)+np.square(posy))
 
-    format = filname.split(".")[-1]
+    print("voxel no %d: (%.1f,%.1f,%.1f)"%(voxel[idx_source],posx[idx_source],posy[idx_source],posz[idx_source]))
 
-    # load data
-    if format != "npy":
-        data = np.genfromtxt(filname,delimiter='\t',skip_header=1,
-                             dtype=geant4_dtype)
-        filname_npy = filname.split(format)[0]+"npy"
-        np.save(filname_npy,data)
-        sys.exit("fin. next action: python analysis %s"%filname_npy)
-    else:
-        data = np.load(filname)
-        print data[0]
+    return voxel[idx_source],posx[idx_source],posy[idx_source],posz[idx_source]
 
-    eth = 0 # energy threshold [MeV]
+def calc_cf_with_pos(data,eth,beam_no,posx,posy,posz):
+                     
+    # energy-threthold cut
     mask = data["edep"]>=eth
     data_eth = data[mask]
 
-    detect_no = len(np.unique(data_eth))
+    data_posx = (data["voxel"]%25-12.5)*2.+1.
+    data_posy = (data["voxel"]//25-12.5)*2.+1.
 
-    print(beam_no*1.0/(detect_no*1.0))
+    da
 
-    # pixel hear map
-    voxel = data["voxel"] # absorber voxel -> 64-127
-    print(np.max(data["voxel"]))
+def calc_cf(data,eth,beam_no):
+
+    # energy-threthold cut
+    mask = data["edep"]>=eth
+    data_eth = data[mask] 
+    # remove coincidence events
+    detect_no = len(np.unique(data_eth)) 
+
+    cf = beam_no*1.0/(detect_no*1.0) #cf = bq/cps   
+
+    return cf
+
+def main():
+
+    filname1 = sys.argv[1] # import npy
+    filname2 = sys.argv[2] # import npy
+    randdir = sys.argv[3] # data
+    beam_no = 1e+8 # sys.argv[3]
+    eth  = 0 # sys.argv[4]
+
+    print("mean cf")
+    data = np.load(filname1)
+    cf_main1 = calc_cf(data,eth=eth,beam_no=1e+8)
+
+    data = np.load(filname2)
+    cf_main2 = calc_cf(data,eth=eth,beam_no=1e+8)
+
+    print(cf_main1)
+    print(cf_main2)
+    
+    filnames = glob.glob(randdir+"/*.npy")
+    print("%d files found"%len(filnames))
+    
+    """
+    cfs = np.zeros(len(filnames))
+    for i,filname in enumerate(filnames):
+        
+        data = np.load(filname)
+        cfs[i] = calc_cf(data,eth,1e+7)
+
     plt.figure()
-    x = np.arange(np.max(data["voxel"])+2)
-    y = np.histogram(voxel,bins=x)[0]
-    map = y.reshape((25,25))
-
+    plt.axhline(cf_main1,color="r",linestyle="dashed",label="monte calro")
+    plt.axhline(cf_main2,color="b",linestyle="dashed",label="gakkai")
+    plt.plot(cfs,"k.")
+    plt.legend()
+    
+    
     plt.figure()
-    plt.pcolor(map)
-    plt.colorbar()
-    plt.savefig("heatmap.png")
-
-    # energy spectrum (ideal energy resolution)
-    plt.figure()
-    x = np.linspace(0,1.400,100)
-    y = np.histogram(data["edep"],bins=x)[0]
-    plt.plot(x[:-1],y)
-    plt.xlabel("Energy [MeV]")
-    plt.ylabel("Counts [#]")
-    plt.tight_layout()
-    plt.savefig("energy.png")
+    #plt.plot(cf_main1/cfs,"r.",label="monte calro rand")
+    plt.plot(np.max(cfs)/cfs,"g.",label="monte calro")
+    plt.plot(cf_main2/cfs,"b.",label="gakkai")
+    plt.yscale("log")
+    plt.legend()
     plt.show()
+    """
+    
+    
+
+    cfs_img = np.zeros(len(filnames))
+    for i,filname in enumerate(filnames):
+        
+        data = np.load(filname)
+        #plt.figure()
+        #plt.scatter(data["posx"],data["posz"],label="x-z")
+        #plt.scatter(data["posy"],data["posz"],label="y-z")
+        #plt.show()
+        #check_geometry(data)
+        voxel,posx,posy,posz = imaging(data,eth=0,DEBUG=True)
+        if i==5: break
 
 if __name__=='__main__':
     main()
-    sys.exit("Fin: geatn4 simulation analysis!")
+    sys.exit("Fin: geant4 simulation analysis!")
