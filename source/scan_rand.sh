@@ -19,7 +19,7 @@ echo ${HEAD} >${OUTFIL}
 # Replace /run/beamOn XX to the designated repeating times.
 OLD="beamOn.*"                                                                             
 NEW="beamOn "$REPEAT   
-sed -i -e "s/${OLD}/${NEW}/g" run.mac
+sed -i -e "s/${OLD}/${NEW}/g" ${MACROFIL}
 
 # Scan, simulate, and save data
 for i in `seq 0 ${N}`
